@@ -1,0 +1,13 @@
+D:\Users\anton\Documents\GitHub\ASCII-Chess-II\ascii_chess_ii\bin\Debug\netcoreapp3.1\ASCII_Chess_II.exe
+D:\Users\anton\Documents\GitHub\ASCII-Chess-II\ascii_chess_ii\bin\Debug\netcoreapp3.1\ASCII_Chess_II.deps.json
+D:\Users\anton\Documents\GitHub\ASCII-Chess-II\ascii_chess_ii\bin\Debug\netcoreapp3.1\ASCII_Chess_II.runtimeconfig.json
+D:\Users\anton\Documents\GitHub\ASCII-Chess-II\ascii_chess_ii\bin\Debug\netcoreapp3.1\ASCII_Chess_II.runtimeconfig.dev.json
+D:\Users\anton\Documents\GitHub\ASCII-Chess-II\ascii_chess_ii\bin\Debug\netcoreapp3.1\ASCII_Chess_II.dll
+D:\Users\anton\Documents\GitHub\ASCII-Chess-II\ascii_chess_ii\bin\Debug\netcoreapp3.1\ASCII_Chess_II.pdb
+D:\Users\anton\Documents\GitHub\ASCII-Chess-II\ascii_chess_ii\obj\Debug\netcoreapp3.1\ASCII_Chess_II.csprojAssemblyReference.cache
+D:\Users\anton\Documents\GitHub\ASCII-Chess-II\ascii_chess_ii\obj\Debug\netcoreapp3.1\ASCII_Chess_II.AssemblyInfoInputs.cache
+D:\Users\anton\Documents\GitHub\ASCII-Chess-II\ascii_chess_ii\obj\Debug\netcoreapp3.1\ASCII_Chess_II.AssemblyInfo.cs
+D:\Users\anton\Documents\GitHub\ASCII-Chess-II\ascii_chess_ii\obj\Debug\netcoreapp3.1\ASCII_Chess_II.csproj.CoreCompileInputs.cache
+D:\Users\anton\Documents\GitHub\ASCII-Chess-II\ascii_chess_ii\obj\Debug\netcoreapp3.1\ASCII_Chess_II.dll
+D:\Users\anton\Documents\GitHub\ASCII-Chess-II\ascii_chess_ii\obj\Debug\netcoreapp3.1\ASCII_Chess_II.pdb
+D:\Users\anton\Documents\GitHub\ASCII-Chess-II\ascii_chess_ii\obj\Debug\netcoreapp3.1\ASCII_Chess_II.genruntimeconfig.cache
