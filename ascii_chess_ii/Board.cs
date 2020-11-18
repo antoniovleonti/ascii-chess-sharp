@@ -10,12 +10,12 @@ namespace ASCII_Chess_II
     {
         /*---------------------------------------------------------CONSTANTS-*/
 
-        public const int PAWN = 1; // values of each piece on board
-        public const int KNIGHT = 2;
-        public const int BISHOP = 3;
-        public const int ROOK = 4;
-        public const int QUEEN = 5;
-        public const int KING = 6;
+        public const int PAWN   = 1; // ID of each piece on board.
+        public const int KNIGHT = 2; // each can be positive  (white)
+        public const int BISHOP = 3; // or negative (black).
+        public const int ROOK   = 4;
+        public const int QUEEN  = 5;
+        public const int KING   = 6;
 
 
         /*--------------------------------------------------------ATTRIBUTES-*/
@@ -313,7 +313,7 @@ namespace ASCII_Chess_II
             int p = piece[move.src.y, move.src.x];
 
             // special cases
-            switch (p)
+            switch (Math.Abs(p))
             {
                 case KING:
 
