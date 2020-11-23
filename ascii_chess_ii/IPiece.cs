@@ -12,8 +12,9 @@ namespace ASCII_Chess_II
 
         // static methods
 
+        // "cast" dy dx
         protected static (List<Pos2> m, List<Pos2> c)
-            CastMoves(Board board, Pos2 pos, int dx, int dy, int player)
+            CastMoves(Board board, Pos2 pos, int dy, int dx, int player)
         {
             List<Pos2> maneuvers = new List<Pos2>();
             List<Pos2> captures = new List<Pos2>();
