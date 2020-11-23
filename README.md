@@ -8,7 +8,7 @@ Here's what makes this implementation special (even compared to my C implementat
 
 And here's why each of these points matter:
 
-Simple data structure: 
+- Simple data structure: 
   
   While bitboards are very fast and cool, they are also error
 prone and make changing the code extremely difficult. The "board" in this 
@@ -17,14 +17,14 @@ keep track of when each square was last interacted with. This is all the informa
 needed for even the most complicated movement patterns in chess (such as en passant 
 and castling).
 
-Totally independent input & output, game management, & board management:
+- Totally independent input & output, game management, & board management:
   
   This implementation uses ASCII diplay as is, but what if you want to use something else?
 With the way this is organized, you can simply swap out the IO layer with whatever you want.
 For example, it's relatively easy to hook this up to Unity, create a simple UI system, and
 use that instead (which I have also done).
 
-*100%* modular implementation of pieces:
+- *100%* modular implementation of pieces:
   
   Chess is a beautifully simple game... most of the time. Some pieces have some quirks that
 seem to make the entire game more difficult to program (namely the pawns and the king).
