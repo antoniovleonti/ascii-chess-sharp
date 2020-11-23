@@ -17,6 +17,15 @@ namespace ASCII_Chess_II
 
         /*-----------------------------------------------------------METHODS-*/
 
+        public void MakeMove(Board board, Move move, int player)
+        {
+            // enable pawn promotions
+            if (move.dst.y == (int)(4 + (3.5 * player)))
+            {
+                board.value[move.src.y, move.src.x] = (int)Pieces.QUEEN * player;
+            }
+        }
+
         public (List<Pos2> m, List<Pos2> c) ListMoves(Board board, Pos2 pos, int player)
         {
             List<Pos2> maneuvers = new List<Pos2>();
@@ -27,15 +36,15 @@ namespace ASCII_Chess_II
             int x = pos.x;
 
             if (y < 8 && y >= 0
-            && Math.Sign(board.Value[y, x]) == 0) // or is empty
+                && Math.Sign(board.value[y, x]) == 0) // or is empty
             {
                 // it can move forward 1
                 maneuvers.Add(new Pos2(y, x));
 
                 // if pawn is at home & nothing is 2 squares ahead
                 y += player;
-                if (board.Touch[pos.y, x] == 0
-                && Math.Sign(board.Value[y, x]) == 0) // or is empty
+                if (board.touch[pos.y, x] == 0
+                    && Math.Sign(board.value[y, x]) == 0) // or is empty
                 {
                     maneuvers.Add(new Pos2(y, x));
                 }
@@ -49,14 +58,21 @@ namespace ASCII_Chess_II
 
                 // check if it's possible to capture in this direction
                 if (x >= 0 && x < 8
-                && y >= 0 && y < 8
-                && (Math.Sign(board.Value[y, x]) == -player // other player's piece                              
-                    || (pos.y == (int)(3.5f + player) // or is en passant
-                        && board.Value[pos.y, x] == -player
-                        && board.Touch[pos.y, x] == 1
-                        && board.Touch[pos.y + player * 2, x] == 1)))
+                    && y >= 0 && y < 8)
                 {
-                    captures.Add(new Pos2(y, x));
+                    // capture other player's piece directly
+                    if (Math.Sign(board.value[y, x]) == -player)
+                    {
+                        captures.Add(new Pos2(y, x));
+                    }
+                    // capture via en passant (considered maneuver)
+                    if (pos.y == (int)(3.5f + player) 
+                        && board.value[pos.y, x] == -player
+                        && board.touch[pos.y, x] == 1
+                        && board.touch[pos.y + player * 2, x] == 1)
+                    {
+                        maneuvers.Add(new Pos2(y, x));
+                    }
                 }
             }
             return (maneuvers, captures);

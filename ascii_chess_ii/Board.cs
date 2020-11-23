@@ -8,13 +8,10 @@ namespace ASCII_Chess_II
     {
         /*--------------------------------------------------------ATTRIBUTES-*/
 
-        // value of piece present in each square
-        private int[,] value; 
-        public int[,] Value { get { return value; } }
-
-        // number of moves since square has been interacted with
-        private uint[,] touch; 
-        public uint[,] Touch { get { return touch; } }
+        
+        public int[,] value { get; } // integer value of piece present in each square
+        public uint[,] touch { get; } // # of moves since square has been touched
+        // "touched" means a piece moving to or from the square. starts at 0
 
 
         /*-----------------------------------------------------------METHODS-*/
@@ -47,34 +44,14 @@ namespace ASCII_Chess_II
         // plays move on the board & handles special cases such as castling
         public void MakeMove(Move move, int player)
         {
-            int p = value[move.src.y, move.src.x];
+            if (move == null) throw new ArgumentNullException();
+
+            uint p = (uint)Math.Abs(value[move.src.y, move.src.x]);
 
             // special cases
-            switch ((uint)Math.Abs(p))
+            if (Pieces.dict.ContainsKey(p))
             {
-                case Pieces.KING:
-
-                    int dy = move.dst.y - move.src.y;
-                    int dx = move.dst.x - move.src.x;
-
-                    if (dy == 0 // if castling
-                    && Math.Abs(dx) == 2)
-                    {
-                        // move rook
-                        value[move.src.y, (int)(4 + (3.5f * Math.Sign(dx)))] = 0;
-                        value[move.src.y, move.src.x + Math.Sign(dx)] = (int)Pieces.ROOK * player;
-                    }
-
-                    break;
-
-                case Pieces.PAWN:
-
-                    // enable pawn promotions
-                    if (move.dst.y == (int)(4 + (3.5 * player)))
-                    {
-                        value[move.src.y, move.src.x] = (int)Pieces.QUEEN * player;
-                    }
-                    break;
+                Pieces.dict[p].MakeMove(this, move, player);
             }
 
             // perform move
@@ -83,7 +60,7 @@ namespace ASCII_Chess_II
 
             // increment touch
             for(int i = 0; i < 8; i++)
-                for(int j = 0; j < 8; j++)
+                for(int j = 0; j < 8; j++) 
                     if (touch[i, j] > 0) touch[i, j]++;
 
             // remember these squares were touched
@@ -93,21 +70,25 @@ namespace ASCII_Chess_II
 
         /*-BOARD STATE QUERY FUNCTIONS---------------------------------------*/
 
-        public bool PosIsHitBy(Pos2 pos, uint[] mask, int player)
+        public bool PosIsHitBy(Pos2 pos, uint[] ignoredPieces, int player)
         {
+            if (pos == null) throw new ArgumentNullException();
+            if (ignoredPieces == null) ignoredPieces = new uint[] { };
+
             // iterate through each piece type
-            foreach(KeyValuePair<uint, IPiece> vp in Pieces.dict)
+            foreach (KeyValuePair<uint, IPiece> kvp in Pieces.dict)
             {
-                if (mask != null && mask.Contains(vp.Key)) continue; // check if piece is included
+                // check if piece is included
+                if (ignoredPieces.Contains(kvp.Key)) continue;
 
                 // get all captures possible of piece from pos
-                List<Pos2> captures = vp.Value.ListMoves(this, pos, player).c;
+                List<Pos2> captures = kvp.Value.ListMoves(this, pos, player).c;
 
                 // check all potential captures here
                 foreach (Pos2 dst in captures)
                 {
                     // if this is the right piece to attack pos
-                    if (Math.Abs(value[dst.y, dst.x]) == vp.Key) return true;
+                    if (Math.Abs(value[dst.y, dst.x]) == kvp.Key) return true;
                 }
             }
             return false;
@@ -121,48 +102,26 @@ namespace ASCII_Chess_II
                 {
                     int p = value[i, j];
 
-                    if (Math.Sign(p) == player)
+                    // if piece does not belong to player, move on
+                    if (Math.Sign(p) != player) continue;
+
+                    List<Pos2>[] sqrs = new List<Pos2>[2]; // destination squares
+                    Pos2 src = new Pos2(i, j); // current piece's starting position
+
+                    // get all pseudo-legal moves for current piece
+                    (sqrs[0], sqrs[1]) =
+                        Pieces.dict[(uint)Math.Abs(p)].ListMoves(this, src, player);
+
+                    foreach (List<Pos2> l in sqrs) // for each move type
                     {
-                        List<Pos2>[] sqrs = new List<Pos2>[2]; // destination squares
-                        Pos2 src = new Pos2(i, j); // current piece's starting position
-
-                        // get all pseudo-legal moves for current piece
-                        (sqrs[0], sqrs[1]) = 
-                            Pieces.dict[(uint)Math.Abs(p)].ListMoves(this, src, player);
-
-                        foreach (List<Pos2> list in sqrs) // for each move type
-                        {
-                            foreach (Pos2 dst in list) // for each destination square
-                            {
-                                Move move = new Move(src, dst);
-
-                                // if move doesn't result in check,
-                                if (!MoveIsSuicide(move, player)) return false;
-                            }
-                        }
+                        // try to find a non suicidal move
+                        if (l.Exists(d => !MoveIsSuicide(new Move(src, d), player)))
+                            return false;
                     }
                 }
             }
-            // if you've checked every move and none worked...
+            // if you've checked every move and none work,
             return true;
-        }
-
-        public List<Pos2> FindPiece(uint p, int player)
-        {
-            List<Pos2> found = new List<Pos2> { };
-
-            for (int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    if (value[i, j] == Math.Abs(p) * player)
-                    {
-                        found.Add(new Pos2(i, j));
-                    }
-                }
-            }
-
-            return found;
         }
 
 
@@ -170,6 +129,8 @@ namespace ASCII_Chess_II
 
         public bool MoveIsPseudoLegal(Move move, int player)
         {
+            if (move == null) throw new ArgumentNullException();
+
             // get values at each board position
             int[] p = { value[move.src.y, move.src.x],
                         value[move.dst.y, move.dst.x] };
@@ -185,40 +146,42 @@ namespace ASCII_Chess_II
             List<Pos2> list = (p[1] == 0) ? maneuvers : captures;
 
             // try to find desired square in list
-            foreach (Pos2 tmp in list)
-                if (tmp.Equals(move.dst)) return true;
-
-            return false;
+            return list.Exists(p => p.Equals(move.dst));
         }
 
         public bool MoveIsSuicide(Move move, int player)
         {
+            // allow null move parameter to mean no move
             move ??= new Move(new Pos2(0, 0), new Pos2(0, 0));
 
-            // copy board state
-            Board test = new Board(this);
-            // make move on new board
-            test.MakeMove(move, player);
+            Board test = new Board(this); // copy board state
+            test.MakeMove(move, player); // make move on new board
 
             // find kind in both variations
             Pos2[] pos = new Pos2[2];
 
-            pos[0] = FindPiece(Pieces.KING, player)[0];
-            pos[1] = test.FindPiece(Pieces.KING, player)[0];
-
-            if (pos[0] == null || pos[1] == null) throw new Exception();
-
-            do
+            for(int i = 0; i < 8; i++)
             {
-                // interpolate positions (if king is stationary do nothing)
-                pos[0].y += Math.Sign(pos[1].y - pos[0].y);
-                pos[0].x += Math.Sign(pos[1].x - pos[0].x);
+                for(int j = 0; j < 8; j++)
+                {
+                    if (value[i, j] == Pieces.KING * player)
+                        pos[0] = new Pos2(i, j);
+
+                    if (test.value[i, j] == Pieces.KING * player)
+                        pos[1] = new Pos2(i, j);
+
+                    if (pos[0] != null && pos[1] != null) break; 
+                }
+            }
+
+            do // (must happen at least once)
+            {
+                pos[0].y += Math.Sign(pos[1].y - pos[0].y); // interpolate king positions on 2nd board 
+                pos[0].x += Math.Sign(pos[1].x - pos[0].x);  // (if king is stationary do nothing)
 
                 // if king is hit at any point during his journey
                 if (test.PosIsHitBy(pos[0], null, player))
-                {
                     return true;
-                }
             }
             while (pos[0].y != pos[1].y || pos[0].x != pos[1].x);
 

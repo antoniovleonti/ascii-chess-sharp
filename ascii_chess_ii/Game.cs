@@ -8,8 +8,7 @@ namespace ASCII_Chess_II
     {
         private int player;
         public int Player { get { return player; } }
-        private Board board;
-        public Board Board { get { return board; } }
+        public Board board { get; }
 
         public Game()
         {

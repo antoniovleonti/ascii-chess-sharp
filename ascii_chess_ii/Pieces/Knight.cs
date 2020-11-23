@@ -17,6 +17,8 @@ namespace ASCII_Chess_II
 
         /*-----------------------------------------------------------METHODS-*/
 
+        public void MakeMove(Board board, Move move, int player) { }
+
         public (List<Pos2> m, List<Pos2> c) ListMoves(Board board, Pos2 pos, int player)
         {
             List<Pos2> maneuvers = new List<Pos2>();
@@ -36,10 +38,10 @@ namespace ASCII_Chess_II
 
                 // if this is a valid spot to put the knight
                 if (y >= 0 && y < 8 // within bounds
-                && x >= 0 && x < 8 // ^^^
-                && Math.Sign(board.Value[y, x]) != player) // not own piece
+                    && x >= 0 && x < 8 // ^^^
+                    && Math.Sign(board.value[y, x]) != player) // not own piece
                 {
-                    if (Math.Sign(board.Value[y, x]) == -player)
+                    if (Math.Sign(board.value[y, x]) == -player)
                     {
                         captures.Add(new Pos2(y, x));
                     }

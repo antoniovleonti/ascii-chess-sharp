@@ -16,22 +16,27 @@ namespace ASCII_Chess_II
             while (result == null)
             {
                 // print board state
-                Console.WriteLine(game.Board.ToString(game.Player));
+                Console.WriteLine(game.board.ToString(game.Player));
+
+                lastPlayer = game.Player; // get current player
+
+                Console.Write($"{(game.Player > 0 ? "White" : "Black")}'s turn: > ");
 
                 string s = Console.ReadLine(); // get player input
                 Move input = ReadMove(s);
                 
-                lastPlayer = game.Player; // get current player
+                
 
                 if (input == null)
                 {
                     Console.WriteLine("\t(?) Cannot parse move!");
+                    continue;
                 }
 
                 // try to make this move
                 result = game.TryMove(input);
 
-                // if it's not the other player's turn now, move was illegal.
+                // if it's not the other Player's turn now, move was illegal.
                 if (game.Player == lastPlayer)
                 {
                     Console.WriteLine("\t(!) Illegal move!");

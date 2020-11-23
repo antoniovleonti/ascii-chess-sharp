@@ -17,6 +17,20 @@ namespace ASCII_Chess_II
 
         /*-----------------------------------------------------------METHODS-*/
 
+        public void MakeMove(Board board, Move move, int player)
+        {
+            int dy = move.dst.y - move.src.y;
+            int dx = move.dst.x - move.src.x;
+
+            if (dy == 0 // if castling
+                && Math.Abs(dx) == 2)
+            {
+                // move rook
+                board.value[move.src.y, (int)(4 + (3.5f * Math.Sign(dx)))] = 0;
+                board.value[move.src.y, move.src.x + Math.Sign(dx)] = (int)Pieces.ROOK * player;
+            }
+        }
+
         public (List<Pos2> m, List<Pos2> c) ListMoves(Board board, Pos2 pos, int player)
         {
             List<Pos2> maneuvers = new List<Pos2>();
@@ -31,10 +45,10 @@ namespace ASCII_Chess_II
                     int x = pos.x + dx;
 
                     if (y >= 0 && y < 8 // within bounds
-                    && x >= 0 && x < 8 // ^^^
-                    && Math.Sign(board.Value[y, x]) != player) // or is not friendly piece
+                        && x >= 0 && x < 8 // ^^^
+                        && Math.Sign(board.value[y, x]) != player) // or is not friendly piece
                     {
-                        if (Math.Sign(board.Value[y, x]) == -player)
+                        if (Math.Sign(board.value[y, x]) == -player)
                         {
                             captures.Add(new Pos2(y, x));
                         }
@@ -45,21 +59,21 @@ namespace ASCII_Chess_II
 
             // now find castling moves
             // TODO: implement chess960 castling rules (more general)
-            if (board.Touch[pos.y, pos.x] == 0 // untouched king
-            && !board.PosIsHitBy(pos, new uint[] { Pieces.KING }, player)) // not in check
+            if (board.touch[pos.y, pos.x] == 0 // untouched king
+                && !board.PosIsHitBy(pos, new uint[] { Pieces.KING }, player)) // not in check
             {
                 for (int i = 0; i < 2; i++)
                 {
                     int dx = 1 - 2 * i; // -1 or 1
 
-                    if (board.Touch[pos.y, (int)(4 + 3.5f * dx)] == 0) // untouched rook
+                    if (board.touch[pos.y, (int)(4 + 3.5f * dx)] == 0) // untouched rook
                     {
                         bool flag = false;
 
                         // make sure squares are open
                         for (int j = 3 + dx; j > 0 && j < 7; j += dx)
                         {
-                            if (board.Value[pos.y, j] != 0)
+                            if (board.value[pos.y, j] != 0)
                             {
                                 flag = true;
                                 break;
