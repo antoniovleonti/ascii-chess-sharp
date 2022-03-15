@@ -1,5 +1,5 @@
 # ASCII-Chess-II
-This is an extremely modular implementation of chess in C#.
+This is a modular implementation of chess in C#.
 
 Features:
 - Simple data structure
