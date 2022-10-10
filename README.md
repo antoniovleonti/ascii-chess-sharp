@@ -1,4 +1,4 @@
-# ASCII-Chess-II
+# ASCII Chess#
 This is a modular implementation of chess in C#.
 
 Features:
